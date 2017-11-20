@@ -1,0 +1,4 @@
+DB=skeletob_laravel_ecom
+@$con = mysqli_connect("localhost", "skeletob_school", "school123456", "skeletob_school");
+PASS:laravelecom
+USER=skeletob_laravel
