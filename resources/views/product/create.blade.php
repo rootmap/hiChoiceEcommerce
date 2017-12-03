@@ -47,7 +47,52 @@ Product Info
                         <label for="exampleInputEmail1">Old Price <code>Used to give discount</code></label>
                         <input type="text" class="form-control" id="exampleInputEmail1" name="old_price" placeholder="Enter Old Price">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group custom_layout_check">
+                        <input type="checkbox"  class="minimal" id="custom_layout_check" name="is_custom_layout" value="1"> <label style="margin-left: 5px;" for="exampleInputPassword1"> Is Custom Layout</label>
+                    </div>
+                    <input type="hidden" name="layout_pr_value" value="0">
+                    <div class="form-group is_custom_layout">
+                        <label for="exampleInputPassword1">Please Choose a Category Layout</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input type="radio" value="1" name="custom_layout" id="layout_0" /> Layout One</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/ByBrand.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input type="radio" name="custom_layout" value="2" id="layout_1" /> Layout Two</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/BySybCategoryOneLayer.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input type="radio" name="custom_layout" value="3" id="layout_2" /> Layout Three</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/SubCategoryTwoLayer.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input type="radio" name="custom_layout" value="4" id="layout_3" /> Layout Four</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/layout_four.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group categoryField">
                         <label for="exampleInputEmail1">Select Category </label>
                         <select class="form-control" id="cid" name="cid">
                             <option value="0">Select Category</option>
@@ -74,17 +119,7 @@ Product Info
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Select Tag </label>
-                        <select id="tid" name="tid[]" class="form-control select2" multiple="multiple" data-placeholder="Select a Tag" style="width: 100%;">
-                            @if(!empty($tag))
-                            @foreach($tag as $ct)
-                            <option value="<?= $ct->id ?>"><?= $ct->name ?></option>
-                            @endforeach
-                            @endif
-                        </select>
-
-                    </div>
+                    
                     <div class="form-group bid">
                         <label for="exampleInputEmail1">Select Brand </label>
                         <select class="form-control" id="bid" name="bid">
@@ -96,6 +131,18 @@ Product Info
                             @endif
 
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Select Tag </label>
+                        <select id="tid" name="tid[]" class="form-control select2" multiple="multiple" data-placeholder="Select a Tag" style="width: 100%;">
+                            @if(!empty($tag))
+                            @foreach($tag as $ct)
+                            <option value="<?= $ct->id ?>"><?= $ct->name ?></option>
+                            @endforeach
+                            @endif
+                        </select>
+
                     </div>
 
                     <div class="form-group unitcheck">
@@ -196,40 +243,93 @@ Product Info
          $(".sscid").fadeOut();
          $(".bid").fadeOut();
          $(".subcid").fadeOut();
-         $(".select2").select2();
+         
+
+         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue'
+        });
+
+        $("input[name=custom_layout]").click(function(){
+            var thisID=$(this).attr("id");
+            
+            if(thisID=="layout_0")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeOut();
+            }
+            else if(thisID=="layout_1")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeOut();
+                $(".sscid").fadeOut();
+            }
+            else if(thisID=="layout_2")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeIn();
+            }
+            else if(thisID=="layout_3")
+            {
+                $(".categoryField").fadeIn();
+                $(".bid").fadeIn();
+                $(".subcid").fadeOut();
+                $(".sscid").fadeOut();
+            }
+            else
+            {
+                alert(thisID);
+            }
+        });
+
+        $(".select2").select2();
         
         $("select[name=cid]").change(function () {
-            var category_id = $(this).val();
-            $.post("{{url('admin-ecom/product/filter/dextra/category')}}", {'category_id': category_id,'_token':'<?=csrf_token()?>'}, function (data) {
-                if(data==1)
-                {
-                    $(".sscid").fadeOut();
-                    $(".bid").fadeOut();
-                    
-                }
-                else
-                {
-                    $(".bid").fadeIn();
-                    
-                }
-            });
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
+                var category_id = $(this).val();
+                $.post("{{url('admin-ecom/product/filter/dextra/category')}}", {'category_id': category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                    if(data==1)
+                    {
+                        $(".sscid").fadeOut();
+                        $(".bid").fadeOut();
+                        
+                    }
+                    else
+                    {
+                        $(".bid").fadeIn();
+                        
+                    }
+                });
+            }
+            
         });
 
         $("select[name=cid]").change(function () {
-            var category_id = $(this).val();
-            $.post("{{url('admin-ecom/product/filter/dextrashow/brand')}}", {'category_id': category_id,'_token':'<?=csrf_token()?>'}, function (data) {
-                if(data==1)
-                {
-                    $(".sscid").fadeOut();
-                    $(".bid").fadeIn();
-                    $(".subcid").fadeOut();
-                }
-                else
-                {
-                    $(".bid").fadeOut();
-                    $(".subcid").fadeIn();
-                }
-            });
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
+                var category_id = $(this).val();
+                $.post("{{url('admin-ecom/product/filter/dextrashow/brand')}}", {'category_id': category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                    if(data==1)
+                    {
+                        $(".sscid").fadeOut();
+                        $(".bid").fadeIn();
+                        $(".subcid").fadeOut();
+                    }
+                    else
+                    {
+                        $(".bid").fadeOut();
+                        $(".subcid").fadeIn();
+                    }
+                });
+            }
         });
         
         $("select[name=scid]").change(function () {
@@ -257,9 +357,22 @@ Product Info
             });
         });
         
-        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-            checkboxClass: 'icheckbox_minimal-blue',
-            radioClass: 'iradio_minimal-blue'
+        
+
+        $(".is_custom_layout").fadeOut();
+         $(".custom_layout_check .iCheck-helper").click(function () {
+            var colorAcLayout = $(this).parent('div').attr('aria-checked');
+            //alert(colorAcLayout);        
+            if (colorAcLayout == 'true')
+            {
+                $("input[name=layout_pr_value]").val(1);
+                $(".is_custom_layout").fadeIn();
+            } 
+            else
+            {
+                $(".is_custom_layout").fadeOut();
+                $("input[name=layout_pr_value]").val(0);
+            }
         });
 
         $(".isunit").fadeOut();
