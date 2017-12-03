@@ -135,6 +135,22 @@ $brandAll=$arrayDD['brn'];
                                         </li>
                                     </ul>
                                     @endif
+                                @elseif($ct->layout==4)
+                                    @if(isset($brandAll))
+                                    <ul class="menu-items col-md-3 col-xs-12">
+                                        <li class="menu-item menu-item-19 depth-1 category menucol-1-4 ">
+                                            <div class="title title_font" style="width: 200px;"> <a href="javascript:void(0);"> Available Brand </a></div>
+                                            <ul class="submenu submenu-depth-2 col-md-12" style="width: 150px;">
+                                                @foreach($brandAll as $sc)
+                                                <li class="menu-item menu-item-27 depth-2 category ">
+                                                    <div class="title"> <a href="{{url('pro-category/'.$ct->id.'/brand/'.$sc->id.'/'.$sc->name)}}"> {{$sc->name}} </a></div>
+                                                </li>
+                                                @endforeach
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    @endif   
                                 @else
                                     @if(isset($brandAll))
                                     <ul class="menu-items col-md-3 col-xs-12">
