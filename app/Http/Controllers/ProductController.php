@@ -55,7 +55,7 @@ class ProductController extends Controller {
     public function store(Request $request) {
 
         $is_custom_layout=$request->is_custom_layout?1:0;
-        echo $is_custom_layout; die();
+        //echo $is_custom_layout; die();
 
         if($is_custom_layout==0)
         {
