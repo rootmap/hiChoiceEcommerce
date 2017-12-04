@@ -335,6 +335,9 @@ Product Info
         $("select[name=scid]").change(function () {
             var category_id = $("select[name=cid]").val();
             var sub_category_id = $(this).val();
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
             $.post("{{url('admin-ecom/product/filter/extra/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
                 if(data==1)
                 {
@@ -355,6 +358,21 @@ Product Info
                     $(".sscid").fadeOut();
                 }
             });
+            }
+            else
+            {
+                //$(".sscid").fadeIn();
+                $.post("{{url('admin-ecom/product/filter/extra/json/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                    var htmlString = '<option value="0">Please Select</option>';
+                    $.each(data, function (i, item) {
+                        console.log(item.name);
+                        htmlString += '<option value="' + item.id + '">' + item.name + '</option>';
+                    });
+
+                    $("select[name=sscid]").html(htmlString);
+
+                });
+            }
         });
         
         
@@ -426,7 +444,11 @@ Product Info
         });
 
         $("#cid").change(function () {
-            $(".sscid").fadeOut();
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
+                $(".sscid").fadeOut();
+            }
             var cid = $(this).val();
             if (cid == null || cid == 0)
             {
