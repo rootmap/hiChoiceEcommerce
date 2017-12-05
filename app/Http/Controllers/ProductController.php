@@ -161,6 +161,8 @@ class ProductController extends Controller {
         if($is_custom_layout==0)
         {
             $pro = new Product;
+            $pro->is_custom_layout=0;
+            $pro->custom_layout=0;
             $pro->pcode = $request->pcode;
             $pro->name = $request->name;
             $pro->price = $request->price;
@@ -201,6 +203,8 @@ class ProductController extends Controller {
         else
         {
             $pro = new Product;
+            $pro->is_custom_layout=1;
+            $pro->custom_layout=$request->custom_layout;
             $pro->pcode = $request->pcode;
             $pro->name = $request->name;
             $pro->price = $request->price;
@@ -277,6 +281,8 @@ class ProductController extends Controller {
                 if($is_custom_layout==0)
                 {
                     $pro = new Product;
+                    $pro->is_custom_layout=0;
+                    $pro->custom_layout=0;
                     $pro->pcode = $request->pcode . "" . $index;
                     $pro->name = $request->unit_names_param[$index];  //unit_names_param
                     $pro->price = $unitP;
@@ -312,6 +318,8 @@ class ProductController extends Controller {
                 else
                 {
                     $pro = new Product;
+                    $pro->is_custom_layout=1;
+                    $pro->custom_layout=$request->custom_layout;
                     $pro->pcode = $request->pcode . "" . $index;
                     $pro->name = $request->unit_names_param[$index];  //unit_names_param
                     $pro->price = $unitP;
