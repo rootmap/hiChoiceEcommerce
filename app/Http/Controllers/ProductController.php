@@ -537,27 +537,81 @@ class ProductController extends Controller {
      * @return Response
      */
     public function update(Request $request) {
-        $this->validate($request, [
-            'pcode' => 'required',
-            'name' => 'required',
-            'price' => 'required',
-            'cid' => 'required',
-            'scid' => 'required'
-        ]);
 
-        // print_r($request->unit);
-        //exit();
-        
-        $catCheck=Category::where('id',$request->cid)->where('layout',3)->count();
-        if($catCheck==1)
+        $is_custom_layout=$request->is_custom_layout?1:0;
+        if($is_custom_layout==0)
         {
+
             $this->validate($request, [
-                'sscid' => 'required'
+                'pcode' => 'required',
+                'name' => 'required',
+                'price' => 'required',
+                'cid' => 'required',
+                'scid' => 'required'
             ]);
+
+            // print_r($request->unit);
+            //exit();
+            
+            $catCheck=Category::where('id',$request->cid)->where('layout',3)->count();
+            if($catCheck==1)
+            {
+                $this->validate($request, [
+                    'sscid' => 'required'
+                ]);
+            }
+            
+            $bidcatCheck=Category::where('id',$request->cid)->where('layout',2)->count();
+            $sidcatCheck=Category::where('id',$request->cid)->where('layout',4)->count();
+
         }
-        
-        $bidcatCheck=Category::where('id',$request->cid)->where('layout',2)->count();
-        $sidcatCheck=Category::where('id',$request->cid)->where('layout',4)->count();
+        else
+        {
+            if($request->custom_layout==1)
+            {
+                $this->validate($request, [
+                    'pcode' => 'required',
+                    'name' => 'required',
+                    'price' => 'required',
+                    'cid' => 'required',
+                    'scid' => 'required',
+                    'bid' => 'required'
+                ]);
+            }
+            elseif($request->custom_layout==2)
+            {
+                $this->validate($request, [
+                    'pcode' => 'required',
+                    'name' => 'required',
+                    'price' => 'required',
+                    'cid' => 'required',
+                    'scid' => 'required'
+                ]);
+            }
+            elseif($request->custom_layout==3)
+            {
+                $this->validate($request, [
+                    'pcode' => 'required',
+                    'name' => 'required',
+                    'price' => 'required',
+                    'cid' => 'required',
+                    'scid' => 'required',
+                    'sscid' => 'required',
+                    'bid' => 'required'
+                ]);
+            }
+            elseif($request->custom_layout==4)
+            {
+                $this->validate($request, [
+                    'pcode' => 'required',
+                    'name' => 'required',
+                    'price' => 'required',
+                    'cid' => 'required',
+                    'bid' => 'required'
+                ]);
+            }
+        }
+
 
         $iscolor = $request->iscolor ? 1 : '0';
 //        if ($iscolor == 1) {
@@ -580,50 +634,107 @@ class ProductController extends Controller {
 
         $isactive = $request->isactive ? 1 : 0;
 
-
-        $pid = $request->id;
-        $pro = Product::find($pid);
-        $pro->pcode = $request->pcode;
-        $pro->name = $request->name;
-        $pro->price = $request->price;
-        $pro->old_price = $request->old_price;
-        $pro->cid = $request->cid;
-
-
-
-        
-        if($catCheck==1 && $bidcatCheck==0)
+        if($is_custom_layout==0)
         {
-            $pro->sscid = $request->sscid;
-        }
-        
-        if($bidcatCheck==0)
-        {
-            $pro->bid = $request->bid;
-        }
-        if (!isset($request->n_id)) {
 
-            $pro->isunit = $isunit;
-            if ($isunit == 1) {
-                $pro->product_unit_type_id = $request->unit_type_id;
-                $pro->unit = $request->unit;
-            } else {
-                $pro->product_unit_type_id = 0;
-                $pro->unit = "";
+            $pid = $request->id;
+
+            $pro = Product::find($pid);
+            $pro->is_custom_layout=0;
+            $pro->custom_layout=0;
+            $pro->pcode = $request->pcode;
+            $pro->name = $request->name;
+            $pro->price = $request->price;
+            $pro->old_price = $request->old_price;
+            $pro->cid = $request->cid;
+            
+            if($catCheck==1 && $bidcatCheck==0)
+            {
+                $pro->sscid = $request->sscid;
+            }
+            
+            if($bidcatCheck==0)
+            {
+                $pro->bid = $request->bid;
+            }
+            if (!isset($request->n_id)) {
+
+                $pro->isunit = $isunit;
+                if ($isunit == 1) {
+                    $pro->product_unit_type_id = $request->unit_type_id;
+                    $pro->unit = $request->unit;
+                } else {
+                    $pro->product_unit_type_id = 0;
+                    $pro->unit = "";
+                }
+
+                if ($isunit == 1) {
+                    $pro->iscolor = $iscolor;
+                } else {
+                    $pro->iscolor = 0;
+                }
             }
 
-            if ($isunit == 1) {
-                $pro->iscolor = $iscolor;
-            } else {
-                $pro->iscolor = 0;
-            }
+            $pro->photo = $filename;
+            $pro->description = $request->description;
+            $pro->isactive = $isactive;
+            $pro->save();
         }
+        else
+        {
+            $pid = $request->id;
+            $pro = Product::find($pid);
+            $pro->is_custom_layout=1;
+            $pro->custom_layout=$request->custom_layout;
+            $pro->pcode = $request->pcode;
+            $pro->name = $request->name;
+            $pro->price = $request->price;
+            $pro->old_price = $request->old_price;
+            $pro->cid = $request->cid;
+            
+            if($request->custom_layout==1)
+            {
+                $pro->scid = $request->scid;
+                $pro->bid = $request->bid;
+            }
+            elseif($request->custom_layout==2)
+            {
+                $pro->scid = $request->scid;
+            }
+            elseif($request->custom_layout==3)
+            {
+                $pro->scid = $request->scid;
+                $pro->sscid = $request->sscid;
+                $pro->bid = $request->bid;
+            }
+            elseif($request->custom_layout==4)
+            {
+                $pro->bid = $request->bid;
+            }
+            
+            if (!isset($request->n_id)) {
 
-        $pro->photo = $filename;
-        $pro->description = $request->description;
-        $pro->isactive = $isactive;
-        $pro->save();
+                $pro->isunit = $isunit;
+                if ($isunit == 1) {
+                    $pro->product_unit_type_id = $request->unit_type_id;
+                    $pro->unit = $request->unit;
+                } else {
+                    $pro->product_unit_type_id = 0;
+                    $pro->unit = "";
+                }
 
+                if ($isunit == 1) {
+                    $pro->iscolor = $iscolor;
+                } else {
+                    $pro->iscolor = 0;
+                }
+            }
+
+            $pro->photo = $filename;
+            $pro->description = $request->description;
+            $pro->isactive = $isactive;
+            $pro->save();
+        }
 
         //print_r($request->tid);
 

@@ -52,7 +52,80 @@ Modify Product Info
                         <label for="exampleInputEmail1">Old Price <code>Used to give discount</code></label>
                         <input type="text" value="<?= $data->old_price ?>" class="form-control" id="exampleInputEmail1" name="old_price" placeholder="Enter Old Price">
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group custom_layout_check">
+                        <input type="checkbox" 
+                        @if(!empty($data->is_custom_layout))
+                                    checked="checked"  
+                        @endif 
+                            class="minimal" id="custom_layout_check" name="is_custom_layout" value="1"> <label style="margin-left: 5px;" for="exampleInputPassword1"> Is Custom Layout</label>
+                    </div>
+                    
+                    <input type="hidden" name="layout_pr_value"
+                    @if(!empty($data->is_custom_layout))
+                         value="1" 
+                    @else
+                         value="0"   
+                    @endif 
+                    >
+                    <div class="form-group is_custom_layout">
+                        <label for="exampleInputPassword1">Please Choose a Category Layout</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input 
+                                        @if($data->custom_layout==1)
+                                            checked="checked" 
+                                        @endif
+                                        type="radio" value="1" name="custom_layout" id="layout_0" /> Layout One</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/ByBrand.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input 
+                                        @if($data->custom_layout==2)
+                                            checked="checked" 
+                                        @endif
+                                        type="radio" name="custom_layout" value="2" id="layout_1" /> Layout Two</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/BySybCategoryOneLayer.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input 
+                                        @if($data->custom_layout==3)
+                                            checked="checked" 
+                                        @endif
+                                        type="radio" name="custom_layout" value="3" id="layout_2" /> Layout Three</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/SubCategoryTwoLayer.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="text-center">
+                                    <div class="col-md-12"><b><input 
+                                        @if($data->custom_layout==4)
+                                            checked="checked" 
+                                        @endif
+                                        type="radio" name="custom_layout" value="4" id="layout_3" /> Layout Four</b></div>
+                                    <div class="col-md-12">
+                                        <BR>
+                                        <img src="{{url('ecom_layout/layout_four.jpg')}}" />
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group categoryField">
                         <label for="exampleInputEmail1">Select Category </label>
                         <select class="form-control" id="cid" name="cid">
                             <option value="0">Select Category</option>
@@ -312,30 +385,142 @@ Modify Product Info
             checkboxClass: 'icheckbox_minimal-blue',
             radioClass: 'iradio_minimal-blue'
         });
+
+        @if($data->is_custom_layout==1)
+            //$("input[name=custom_layout]").click();
+
+            @if($data->custom_layout==1)
+                $("#layout_0").prop("checked");
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeOut();
+            @elseif($data->custom_layout==2)
+                $("#layout_1").prop("checked");
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeOut();
+                $(".sscid").fadeOut();
+            @elseif($data->custom_layout==3)
+                $("#layout_2").prop("checked");
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeIn();
+            @elseif($data->custom_layout==4)
+                $("#layout_3").prop("checked");
+                $(".categoryField").fadeIn();
+                $(".bid").fadeIn();
+                $(".subcid").fadeOut();
+                $(".sscid").fadeOut();
+            @endif
+
+        @endif
+
+
+
+
+
+        $("input[name=custom_layout]").click(function(){
+            var thisID=$(this).attr("id");
+            
+            if(thisID=="layout_0")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeOut();
+            }
+            else if(thisID=="layout_1")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeOut();
+                $(".sscid").fadeOut();
+            }
+            else if(thisID=="layout_2")
+            {
+                $(".categoryField").fadeIn();
+                $(".subcid").fadeIn();
+                $(".bid").fadeIn();
+                $(".sscid").fadeIn();
+            }
+            else if(thisID=="layout_3")
+            {
+                $(".categoryField").fadeIn();
+                $(".bid").fadeIn();
+                $(".subcid").fadeOut();
+                $(".sscid").fadeOut();
+            }
+            else
+            {
+                alert(thisID);
+            }
+        });
+
+        $(".is_custom_layout").fadeOut();
+        @if($data->is_custom_layout==1)
+            $(".is_custom_layout").fadeIn();
+        @endif
+         $(".custom_layout_check .iCheck-helper").click(function () {
+            var colorAcLayout = $(this).parent('div').attr('aria-checked');
+            //alert(colorAcLayout);        
+            if (colorAcLayout == 'true')
+            {
+                $("input[name=layout_pr_value]").val(1);
+                $(".is_custom_layout").fadeIn();
+            } 
+            else
+            {
+                $(".is_custom_layout").fadeOut();
+                $("input[name=layout_pr_value]").val(0);
+            }
+        });
+
         
         $("select[name=scid]").change(function () {
             var category_id = $("select[name=cid]").val();
             var sub_category_id = $(this).val();
-            $.post("{{url('admin-ecom/product/filter/extra/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
-                if(data==1)
-                {
-                    $(".sscid").fadeIn();
-                    $.post("{{url('admin-ecom/product/filter/extra/json/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
-                        var htmlString = '<option value="0">Please Select</option>';
-                        $.each(data, function (i, item) {
-                            console.log(item.name);
-                            htmlString += '<option value="' + item.id + '">' + item.name + '</option>';
+
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
+
+                $.post("{{url('admin-ecom/product/filter/extra/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                    if(data==1)
+                    {
+                        $(".sscid").fadeIn();
+                        $.post("{{url('admin-ecom/product/filter/extra/json/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                            var htmlString = '<option value="0">Please Select</option>';
+                            $.each(data, function (i, item) {
+                                console.log(item.name);
+                                htmlString += '<option value="' + item.id + '">' + item.name + '</option>';
+                            });
+
+                            $("select[name=sscid]").html(htmlString);
+
                         });
-
-                        $("select[name=sscid]").html(htmlString);
-
+                    }
+                    else
+                    {
+                        $(".sscid").fadeOut();
+                    }
+                });
+            }
+            else
+            {
+                //$(".sscid").fadeIn();
+                $.post("{{url('admin-ecom/product/filter/extra/json/category')}}", {'category_id': category_id,'sub_category_id': sub_category_id,'_token':'<?=csrf_token()?>'}, function (data) {
+                    var htmlString = '<option value="0">Please Select</option>';
+                    $.each(data, function (i, item) {
+                        console.log(item.name);
+                        htmlString += '<option value="' + item.id + '">' + item.name + '</option>';
                     });
-                }
-                else
-                {
-                    $(".sscid").fadeOut();
-                }
-            });
+
+                    $("select[name=sscid]").html(htmlString);
+
+                });
+            }
         });
         
         $(".isunit").fadeOut();
@@ -374,7 +559,11 @@ Modify Product Info
 
         
         $("#cid").change(function () {
-            $(".sscid").fadeOut();
+            var layout_pr_value=$("input[name=layout_pr_value]").val();
+            if(layout_pr_value==0)
+            {
+                $(".sscid").fadeOut();
+            }
             var cid = $(this).val();
             if (cid == null || cid == 0)
             {
